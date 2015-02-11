@@ -20,7 +20,19 @@ endif()
 
 set(SOURCE "src/main.c")
 
-include_directories("../umurmur/src")
+if(UMURMUR_ROOT_PATH)
+  include_directories("${UMURMUR_ROOT_PATH}/src")
+else()
+  if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../umurmur/CMakeLists.txt")
+    include_directories("../umurmur/src")
+  else()
+    message(FATAL_ERROR "Could not determine the umurmur source path. Please specify UMURMUR_ROOT_PATH")
+  endif()
+endif()
+
+if(UMURMUR_BINARY_DIR)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${UMURMUR_BINARY_DIR})
+endif()
 
 add_executable(umurmur-monitor ${SOURCE})
 target_link_libraries(umurmur-monitor ${LIBRT})
